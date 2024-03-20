@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from login import loginPage
 from natiga import get_natiga
 from register import get_register
+from studentBooks import getStudentBooks
 
 app = Flask(__name__)
 
@@ -46,6 +47,19 @@ def register():
         error_message = "Internal Server Error: {}".format(str(e))
         return jsonify({"error": error_message}), 500
     return extracted_data
+
+
+@app.route('/books', methods=['POST'])
+def studentBooks():
+    try:
+        data = request.get_json()
+        id = data['id']
+        code = data['code']
+        books_data = getStudentBooks(id, code)
+    except Exception as e:
+        error_message = "Internal Server Error: {}".format(str(e))
+        return jsonify({"error": error_message}), 500
+    return jsonify({"books": books_data})
 
 
 @app.route('/')
